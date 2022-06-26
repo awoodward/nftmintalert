@@ -15,6 +15,7 @@ NFT Mint Alert can also post to a Twitter feed if an application key and token a
 The following environment variables are set to configure the Lambda:
 
 | Environment Variable | Description |
+| :--- | :--- |
 | DISCORD_WEBHOOK_ID | ID for posting to Discord Webhook |
 | DISCORD_WEBHOOK_TOKEN | Secure token for posting to Discord Webhook |
 | ETH_NETWORK_URL | URL for the Ethereum archive. Can be Alchemy, Infura, etc. |
