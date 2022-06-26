@@ -3,14 +3,14 @@ AWS Lambda function that sends Twitter and Discord alerts when a new NFT mint ha
 
 Project also includes a Go implementation of part of the Opensea API.
 
-Detailed information for NFT projects is obtained from OpenSea using the OpenSea developer API. You'll need an [API Key]https://docs.opensea.io/reference/request-an-api-key to access this API.
-[OpenSea Developer API]https://docs.opensea.io/reference/api-overview
+Detailed information for NFT projects is obtained from OpenSea using the OpenSea developer API. You'll need an [API Key](https://docs.opensea.io/reference/request-an-api-key) to access this API.
+[OpenSea Developer API](https://docs.opensea.io/reference/api-overview)
 
 NFT Mint Alert can post to a Discord Channel if an ID and Token are setup:
-[Discord Webhook Setup]https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
+[Discord Webhook Setup](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
 NFT Mint Alert can also post to a Twitter feed if an application key and token are setup:
-[Twitter API Setup]https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api
+[Twitter API Setup](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api)
 
 The following environment variables are set to configure the Lambda:
 
