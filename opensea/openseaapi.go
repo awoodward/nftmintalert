@@ -80,19 +80,20 @@ type OpenSeaCollection struct {
 		DisplayData             struct {
 			CardDisplayStyle string `json:"card_display_style"`
 		} `json:"display_data"`
-		ExternalURL                 string `json:"external_url"`
-		Featured                    bool   `json:"featured"`
-		FeaturedImageURL            string `json:"featured_image_url"`
-		Hidden                      bool   `json:"hidden"`
-		SafelistRequestStatus       string `json:"safelist_request_status"`
-		ImageURL                    string `json:"image_url"`
-		IsSubjectToWhitelist        bool   `json:"is_subject_to_whitelist"`
-		LargeImageURL               string `json:"large_image_url"`
-		MediumUsername              string `json:"medium_username"`
-		Name                        string `json:"name"`
-		OnlyProxiedTransfers        bool   `json:"only_proxied_transfers"`
-		OpenseaBuyerFeeBasisPoints  string `json:"opensea_buyer_fee_basis_points"`
-		OpenseaSellerFeeBasisPoints string `json:"opensea_seller_fee_basis_points"`
+		ExternalURL                string `json:"external_url"`
+		Featured                   bool   `json:"featured"`
+		FeaturedImageURL           string `json:"featured_image_url"`
+		Hidden                     bool   `json:"hidden"`
+		SafelistRequestStatus      string `json:"safelist_request_status"`
+		ImageURL                   string `json:"image_url"`
+		IsSubjectToWhitelist       bool   `json:"is_subject_to_whitelist"`
+		LargeImageURL              string `json:"large_image_url"`
+		MediumUsername             string `json:"medium_username"`
+		Name                       string `json:"name"`
+		OnlyProxiedTransfers       bool   `json:"only_proxied_transfers"`
+		OpenseaBuyerFeeBasisPoints string `json:"opensea_buyer_fee_basis_points"`
+		//OpenseaSellerFeeBasisPoints string `json:"opensea_seller_fee_basis_points"`
+		OpenseaSellerFeeBasisPoints int    `json:"opensea_seller_fee_basis_points"`
 		PayoutAddress               string `json:"payout_address"`
 		RequireEmail                bool   `json:"require_email"`
 		ShortDescription            string `json:"short_description"`

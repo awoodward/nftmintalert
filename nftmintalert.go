@@ -19,8 +19,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	twitterV1 "github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
+	"github.com/g8rswimmer/go-twitter/v2"
+	"github.com/joho/godotenv"
+
+	twitterV1 "github.com/dghubble/go-twitter/twitter"
+
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -53,6 +57,14 @@ type TwitterKeys struct {
 	ConsumerSecret string
 	Token          string
 	TokenSecret    string
+}
+
+type authorize struct {
+	Token string
+}
+
+func (a authorize) Add(req *http.Request) {
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", a.Token))
 }
 
 func rankByWordCount(wordFrequencies map[string]int) PairList {
@@ -124,6 +136,7 @@ func callOut(collection *opensea.OpenSeaCollection, address string, count int) b
 	case contractENS2: //ens domains
 		return false
 	}
+	log.Printf("Checking for callout %v (count %v)\n", address, count)
 	if len(collection.ExternalLink) == 0 && len(collection.Collection.TwitterUsername) == 0 {
 		return false
 	}
@@ -197,7 +210,8 @@ func sendTweet(collection *opensea.OpenSeaCollection, count int, twitKey Twitter
 
 	replyTo := ""
 	if collection.Collection.TwitterUsername != "" {
-		replyTo = "@" + collection.Collection.TwitterUsername
+		// Twitter complaint 07-16-2022 - automated @mentions
+		//replyTo = "@" + collection.Collection.TwitterUsername
 	}
 	link := fmt.Sprintf("https://opensea.io/collection/%v", collection.Collection.Slug)
 	//link := collection.ExternalLink
@@ -211,6 +225,55 @@ func sendTweet(collection *opensea.OpenSeaCollection, count int, twitKey Twitter
 		return
 	}
 	log.Printf("Tweet sent. Tweet ID: %v\n", tweet.ID)
+}
+
+func sendTweetV2(collection *opensea.OpenSeaCollection, count int, twitKey TwitterKeys) {
+	if twitKey.ConsumerKey == "" {
+		log.Printf("Twitter Consumer Key environment variable (TWITTER_CONSUMER_KEY) is not set.\n")
+		return
+	}
+	if twitKey.ConsumerSecret == "" {
+		log.Printf("Twitter Consumer Secret environment variable (TWITTER_CONSUMER_SECRET) is not set.\n")
+		return
+	}
+	if twitKey.Token == "" {
+		log.Printf("Twitter Token environment variable (TWITTER_TOKEN) is not set.\n")
+		return
+	}
+	if twitKey.TokenSecret == "" {
+		log.Printf("Twitter Token Secret environment variable (TWITTER_TOKEN_SECRET) is not set.\n")
+		return
+	}
+	config := oauth1.NewConfig(twitKey.ConsumerKey, twitKey.ConsumerSecret)
+	token := oauth1.NewToken(twitKey.Token, twitKey.TokenSecret)
+	httpClient := config.Client(oauth1.NoContext, token)
+
+	link := fmt.Sprintf("https://opensea.io/collection/%v", collection.Collection.Slug)
+	status := fmt.Sprintf("NFTs Mint Alert: %v sold in 10 minutes. \nHead on over and have a look\n %v \n\n #nft #nfts #nftcollection #nftcollectibles #nftminting #niftyscoops", count, link)
+
+	client := &twitter.Client{
+		Authorizer: authorize{
+			Token: "",
+		},
+		Client: httpClient,
+		Host:   "https://api.twitter.com",
+	}
+
+	req := twitter.CreateTweetRequest{
+		Text: status,
+	}
+	fmt.Println("Callout to create tweet callout")
+
+	tweetResponse, err := client.CreateTweet(context.Background(), req)
+	if err != nil {
+		log.Printf("Error sending tweet: %v\n", err)
+	}
+
+	enc, err := json.MarshalIndent(tweetResponse, "", "    ")
+	if err != nil {
+		log.Printf("Error unmarshaling tweet: %v\n", err)
+	}
+	fmt.Println(string(enc))
 }
 
 func processLogs(event Event) {
@@ -377,7 +440,8 @@ func processLogs(event Event) {
 			result := callOut(collection, mint.Key, mint.Value)
 			if result {
 				log.Printf("Sending tweet. Contract: %v Slug: %v TwitterId: %v\n", mint.Key, collection.Collection.Slug, collection.Collection.TwitterUsername)
-				sendTweet(collection, mint.Value, twitKey)
+				//sendTweet(collection, mint.Value, twitKey)
+				sendTweetV2(collection, mint.Value, twitKey)
 				sendDiscordWebhook(collection, mint.Value, discordWebhookId, discordWebhookToken)
 				// Add to list of NFT projects we've posted
 				status.Recents = append(status.Recents, mint.Key)
@@ -400,6 +464,10 @@ func processLogs(event Event) {
 func HandleRequest(ctx context.Context, event Event) {
 	processLogs(event)
 	return
+}
+
+func init() {
+	godotenv.Load()
 }
 
 func main() {
