@@ -215,7 +215,7 @@ func sendTweet(collection *opensea.OpenSeaCollection, count int, twitKey Twitter
 	}
 	link := fmt.Sprintf("https://opensea.io/collection/%v", collection.Collection.Slug)
 	//link := collection.ExternalLink
-	status := fmt.Sprintf("NFTs Mint Alert: %v sold in 10 minutes.\n %v \nHead on over and have a look\n %v \n\n #nft #nfts #nftcollection #nftcollectibles #nftminting #niftyscoops", count, replyTo, link)
+	status := fmt.Sprintf("NFTs Mint Alert: %v sold in 10 minutes.\n %v \nHead on over and have a look\n %v \n\n #nft #nfts #nftcollection #nftcollectibles #nftminting #niftyscoops #NFTsales", count, replyTo, link)
 	sup := twitterV1.StatusUpdateParams{
 		Status: status,
 	}
@@ -249,7 +249,7 @@ func sendTweetV2(collection *opensea.OpenSeaCollection, count int, twitKey Twitt
 	httpClient := config.Client(oauth1.NoContext, token)
 
 	link := fmt.Sprintf("https://opensea.io/collection/%v", collection.Collection.Slug)
-	status := fmt.Sprintf("NFTs Mint Alert: %v sold in 10 minutes. \nHead on over and have a look\n %v \n\n #nft #nfts #nftcollection #nftcollectibles #nftminting #niftyscoops", count, link)
+	status := fmt.Sprintf("NFTs Mint Alert: %v sold in 10 minutes. \nHead on over and have a look\n %v \n\n #nft #nfts #nftcollection #nftcollectibles #nftminting #niftyscoops #NFTsales", count, link)
 
 	client := &twitter.Client{
 		Authorizer: authorize{
